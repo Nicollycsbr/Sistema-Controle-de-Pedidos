@@ -1,1 +1,54 @@
-// Início da implementação do módulo Produto — Augusto
+#include "../include/produto.h"
+
+#define ARQUIVO_PRODUTOS "../data/Produtos.csv"
+
+void cadastrarProduto() {
+    Produto p;
+    FILE *arquivo = fopen(ARQUIVO_PRODUTOS, "a");
+
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo de produtos!\n");
+        return;
+    }
+
+    printf("Digite o ID do produto:");
+    scanf("%d", &p.id);
+    getchar();
+    printf("Digite o nome do produto:");
+
+    fgets(p.nome, 50, stdin);
+    p.nome[strcspn(p.nome, "\n")] = '\0';
+
+    printf("Digite o preco do produto:");
+    scanf("%f", &p.preco);
+    printf("Digite a quantidade do produto:");
+    scanf("%d", &p.quantidade);
+
+    fprintf(arquivo, "%d,%s,%.2f,%d\n", p.id, p.nome, p.preco, p.quantidade);
+    fclose(arquivo);
+
+    printf("Produto cadastrado com sucesso!\n");
+
+    void listarProdutos() {
+        Produto p;
+        FILE *arquivo = fopen(ARQUIVO_PRODUTOS, "r");
+
+        if (arquivo == NULL) {
+            printf("Nenhum produto cadastrado ainda.\n");
+            return;
+        }
+
+        printf("Lista de Produtos:\n");
+        while (fscanf(arquivo, "%d,%49[^,],%f,%d\n", &p.id, p.nome, &p.preco, &p.quantidade) != EOF) {
+            printf("ID: %d, Nome: %s, Preco: %.2f, Quantidade: %d\n", p.id, p.nome, p.preco, p.quantidade);
+        }
+
+        fclose(arquivo);
+    }
+
+    void listarProdutos() {
+        produto p;
+        FILE *arquivo = fopen(ARQUIVO_PRODUTOS, "r");
+        
+    }
+}
