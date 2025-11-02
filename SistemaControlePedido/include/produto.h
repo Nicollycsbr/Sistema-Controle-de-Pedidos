@@ -14,8 +14,7 @@ typedef struct {
 
 void cadastrarProduto();
 void listarProdutos();
-void buscarProduto();
 void atualizarProduto();
-void excluirProduto();
+void deletarProduto();
 
 #endif
