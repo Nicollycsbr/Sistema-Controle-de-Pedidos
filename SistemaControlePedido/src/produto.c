@@ -54,7 +54,7 @@ void cadastrarProduto() {
         Produto p;
         int encontrado = 0;
         FILE *arquivo = fopen(ARQUIVO_PRODUTOS, "r");
-        FILE *temp = fopen("../data/temp.csv", "w");
+        FILE *temp = fopen("data/temp.csv", "w");
 
         if (arquivo == NULL || temp == NULL) {
             printf("Erro ao abrir o arquivo de produtos!\n");
@@ -84,7 +84,7 @@ void cadastrarProduto() {
         fclose(arquivo);
         fclose(temp);
         remove(ARQUIVO_PRODUTOS);
-        rename("../data/temp.csv", ARQUIVO_PRODUTOS);
+        rename("data/temp.csv", ARQUIVO_PRODUTOS);
 
         if (encontrado)
             printf("Produto atualizado com sucesso!\n");
@@ -98,7 +98,7 @@ void cadastrarProduto() {
         int encontrado = 0;
 
         FILE *arquivo = fopen(ARQUIVO_PRODUTOS, "r");
-        FILE *temp = fopen("../data/temp.csv", "w");
+        FILE *temp = fopen("data/temp.csv", "w");
 
         if (arquivo == NULL || temp == NULL) {
             printf("Erro ao abrir o arquivo de produtos!\n");
@@ -119,7 +119,7 @@ void cadastrarProduto() {
         fclose(arquivo);
         fclose(temp);
         remove(ARQUIVO_PRODUTOS);
-        rename("../data/temp.csv", ARQUIVO_PRODUTOS);
+        rename("data/temp.csv", ARQUIVO_PRODUTOS);
 
         if (encontrado)
             printf("Produto deletado com sucesso!\n");
