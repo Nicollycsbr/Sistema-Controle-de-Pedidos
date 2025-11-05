@@ -1,15 +1,38 @@
-#ifndef CLIENTE.H
-#define CLIENTE.H
+// Definição das structs e funções de cliente
+#ifndef CLIENTE_H
+#define CLIENTE_H
 
-typedef struct{
+#define TAM_NOME 100
+#define TAM_ENDERECO 200
+#define TAM_TELEFONE 20
+#define TAM_CPF 15
+#define TAM_CNPJ 20
+#define TAM_RAZAO 100
+
+//Pessoa Física
+typedef struct {
+    char nome[TAM_NOME];
+    char cpf[TAM_CPF];
+    char celular[TAM_TELEFONE];
+} PessoaFisica;
+
+//Pessoa Jurídica
+typedef struct {
+    char razao_social[TAM_RAZAO];
+    char cnpj[TAM_CNPJ];
+} PessoaJuridica;
+
+//Cliente
+typedef struct {
     int id;
-    char nome[100];
-    char endereço[200];
-    int telefone;
-    char email[200];
-    char tipo[10];//FÍSICA OU JURÍDICA
-    int cpfcnpj;
-}Cliente;
+    char nome[TAM_NOME];
+    char endereco[TAM_ENDERECO];
+    char telefone[TAM_TELEFONE];
+    union {
+        PessoaFisica pf;
+        PessoaJuridica pj;
+    } dados;
+} Cliente;
 
 void inserir_cliente();
 void listar_clientes();
@@ -17,5 +40,8 @@ void remover_cliente();
 void consultar_cliente();
 void carregar_clientesCSV();
 void salvar_clientesCSV();
+void analisar_cliente();
+int validar_CPF(const char *cpf);
+int validar_CNPJ(const char *cnpj);
 
 #endif
