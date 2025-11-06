@@ -36,11 +36,11 @@ typedef struct {
 
 void inserir_cliente();
 void listar_clientes();
-void remover_cliente();
+void editar_cliente();
 void consultar_cliente();
+void remover_cliente()
 void carregar_clientesCSV();
 void salvar_clientesCSV();
-void analisar_cliente();
 int validar_CPF(const char *cpf);
 int validar_CNPJ(const char *cnpj);
 
