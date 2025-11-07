@@ -1,4 +1,4 @@
-// Definição das structs e funções de cliente
+//Definição das structs e funções de cliente
 #ifndef CLIENTE_H
 #define CLIENTE_H
 
@@ -34,6 +34,7 @@ typedef struct {
     } dados;
 } Cliente;
 
+//Funções
 void inserir_cliente();
 void listar_clientes();
 void editar_cliente();

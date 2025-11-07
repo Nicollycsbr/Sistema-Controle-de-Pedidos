@@ -1,9 +1,6 @@
-#ifndef INTERFACE.H
-#define INTERFACE.H
+#ifndef INTERFACE_H
+#define INTERFACE_H
 
-void menu_principal()
-void menu_clientes()
-void menu_pedidos()
-void menu_produtos()
+void menu_cliente();
 
 #endif
