@@ -19,7 +19,7 @@ CFLAGS = -Wall -Wextra -std=c11
 # Regra padrão (gera o executável)
 $(EXEC): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(SRC) $(INCLUDES) $(CFLAGS) -o $(EXEC)
+	$(CC) $(SRC) $(INCLUDES) $(CFLAGS) -lncurses -o $(EXEC)
 	@echo "✅ Compilação concluída! Executável gerado em $(EXEC)"
 
 # Rodar o programa
