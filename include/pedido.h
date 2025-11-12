@@ -1,6 +1,11 @@
 #ifndef PEDIDO_H
 #define PEDIDO_H
 
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+
 typedef struct {
     int id;
     int clienteId;
