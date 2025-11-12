@@ -1,46 +1,58 @@
-#include<stdio.h>
-#include<stdlib.h>
-//MENU PRINCIPAL
-int menu_principal(){
-   int op;
-   printf("\n-----MENU PRINCIPAL-----\n");
-   printf("(1) Clientes\n");
-   printf("(2) Produtos\n");
-   printf("(3) Pedidos\n");
-   printf("(0) Sair\n");
-   printf("------------------------\n");
-   printf("Qual area deseja acessar?\n");
-   scanf("%d", &op);
-   return op;
+#include <stdio.h>
+#include <stdlib.h>
+#include <ncurses.h>
+#include "../include/interface.h"
+
+int menu_principal() {
+    int op;
+    clear();
+    mvprintw(1, 2, "----- MENU PRINCIPAL -----");
+    mvprintw(3, 4, "(1) Clientes");
+    mvprintw(4, 4, "(2) Produtos");
+    mvprintw(5, 4, "(3) Pedidos");
+    mvprintw(6, 4, "(0) Sair");
+    mvprintw(8, 2, "Qual área deseja acessar? ");
+    refresh();
+    op = getch() - '0';
+    return op;
 }
 
-int main()
-{
-   int op;
-   do{
-   op=menu_principal();
-      switch (op){
-      case 1:
-         printf("Area de clientes acessada!\n");
-         break;
+int main() {
+    int op;
+    initscr();
+    cbreak();
+    noecho();
+    keypad(stdscr, TRUE);
 
-      case 2:
-         printf("Area de produtos acessada!\n");
-         break;
+    do {
+        op = menu_principal();
+        switch (op) {
+            case 1:
+                menu_cliente();
+                break;
+            case 2:
+                clear();
+                mvprintw(10, 2, "Área de produtos acessada!");
+                getch();
+                break;
+            case 3:
+                clear();
+                mvprintw(10, 2, "Área de pedidos acessada!");
+                getch();
+                break;
+            case 0:
+                clear();
+                mvprintw(10, 2, "Encerrando o programa...");
+                getch();
+                break;
+            default:
+                clear();
+                mvprintw(10, 2, "Opção inválida! Tente novamente.");
+                getch();
+                break;
+        }
+    } while (op != 0);
 
-      case 3:
-         printf("Area de pedidos acessada!\n");
-         break;
-
-      case 0:
-         printf("Encerrando o programa...\n");
-         break;
-
-      default:
-         printf("Opção inválida!\n");
-         break;
-      }
-   }while(op!=0);
-   
-   return 0; 
+    endwin();
+    return 0;
 }

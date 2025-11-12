@@ -1,46 +1,49 @@
-#include <stdio.h>
+#include <ncurses.h>
 #include "../include/interface.h"
 #include "../include/cliente.h"
 
-void menu_cliente(){
-   int op;
-   do{
-   printf("\n-----MENU CLIENTE-----\n");
-   printf("(1) Cadastrar novo cliente\n");
-   printf("(2) Remover cliente cadastrado\n");
-   printf("(3) Consultar cliente cadastrado\n");
-   printf("(4) Editar cliente cadastrado\n")
-   printf("(5) Listar clientes cadastrados\n");
-   printf("(0) Sair\n");
-   printf("------------------------\n");
-   printf("Opção:\n");
-   scanf("%d", &op);
-   getchar();
+void menu_cliente() {
+    int highlight = 0;
+    int choice;
+    const char *opcoes[] = {
+        "Cadastrar novo cliente",
+        "Remover cliente cadastrado",
+        "Consultar cliente cadastrado",
+        "Editar cliente cadastrado",
+        "Listar clientes cadastrados",
+        "Voltar ao menu principal"
+    };
+    int n_opcoes = sizeof(opcoes) / sizeof(opcoes[0]);
 
-   switch (op) {
-            case 1:
-                inserir_cliente();
+    while (1) {
+        clear();
+        mvprintw(1, 2, "----- MENU CLIENTE -----");
+        for (int i = 0; i < n_opcoes; i++) {
+            if (i == highlight)
+                attron(A_REVERSE);
+            mvprintw(3 + i, 4, "%s", opcoes[i]);
+            attroff(A_REVERSE);
+        }
+        refresh();
+        choice = getch();
+
+        switch (choice) {
+            case KEY_UP:
+                highlight = (highlight == 0) ? n_opcoes - 1 : highlight - 1;
                 break;
-
-            case 2:
+            case KEY_DOWN:
+                highlight = (highlight == n_opcoes - 1) ? 0 : highlight + 1;
                 break;
-
-            case 3:
-                break;
-
-            case 4:
-                break;
-
-            case 5:
-                break;
-
-            case 0:
-                printf("Saindo do menu de clientes...\n");
-                break;
-
-            default:
-                printf("Opção inválida! Tente novamente.\n");
+            case 10:
+                switch (highlight) {
+                    case 0: inserir_cliente(); break;
+                    case 1: remover_cliente(); break;
+                    case 2: consultar_cliente(); break;
+                    case 3: editar_cliente(); break;
+                    case 4: listar_clientes(); break;
+                    case 5: return;
+                }
                 break;
         }
-    } while (op != 0);
+    }
 }

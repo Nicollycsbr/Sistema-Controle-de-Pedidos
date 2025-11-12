@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include "cliente.h"
+#include "interface.h"
 
 //INSERÇÃO CLIENTE
 void inserir_cliente(){
@@ -8,7 +11,7 @@ void inserir_cliente(){
     printf("Qual você deseja cadastrar?\n");
     printf("(1) Pessoa física\n");
     printf("(2) Pessoa jurídica\n");
-    printf("Opção: ")
+    printf("Opção: ");
     scanf("%d", &tipo);
     getchar();
 

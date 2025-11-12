@@ -30,3 +30,16 @@ run: $(EXEC)
 clean:
 	rm -rf $(BUILD_DIR)
 	@echo "Diretório 'build' limpo!" 
+
+CFLAGS = -Iinclude
+LDFLAGS = -lncurses
+
+SRC = src/main.c src/interface.c src/cliente.c
+OBJ = $(SRC:.c=.o)
+EXEC = sistema
+
+$(EXEC): $(OBJ)
+	$(CC) $(OBJ) -o $(EXEC) $(LDFLAGS)
+
+clean:
+	rm -f $(OBJ) $(EXEC)
