@@ -2,198 +2,366 @@
 #include <stdlib.h>
 #include <string.h>
 #include "cliente.h"
-#include "interface.h"
 
-//INSERÇÃO CLIENTE
-void inserir_cliente(){
-    Cliente cliente;
-    int tipo;
-    printf("Qual você deseja cadastrar?\n");
-    printf("(1) Pessoa física\n");
-    printf("(2) Pessoa jurídica\n");
-    printf("Opção: ");
-    scanf("%d", &tipo);
-    getchar();
-
-    printf("Defina o ID do cliente: ");
-    scanf("%d", &cliente.id);
-    getchar();
-
-    printf("Informe o nome: ");
-    fgets(cliente.nome, TAM_NOME, stdin);
-    cliente.nome[strcspn(cliente.nome,"\n")]=0;
-
-    printf("Informe o endereço: ");
-    fgets(cliente.endereco, TAM_ENDERECO, stdin);
-    cliente.endereco[strcspn(cliente.endereco,"\n")]=0;
-
-    printf("Informe o telefone: ");
-    fgets(cliente.telefone, TAM_TELEFONE, stdin);
-    cliente.telefone[strcspn(cliente.telefone,"\n")]=0;
-
-    if (tipo==1){
-        printf("Informe o nome completo: ");
-        fgets(cliente.dados.pf.nome, TAM_NOME, stdin);
-        cliente.dados.pf.nome[strcspn(cliente.dados.pf.nome, "\n")]=0;
-
-        do {
-            printf("Informe o CPF (somente números): ");
-            fgets(cliente.dados.pf.cpf, TAM_CPF, stdin);
-            cliente.dados.pf.cpf[strcspn(cliente.dados.pf.cpf,"\n")]=0;
-
-            if (!validar_CPF(cliente.dados.pf.cpf)) {
-                printf("CPF inválido! Tente novamente.\n");
-            }
-        } while (!validar_CPF(cliente.dados.pf.cpf));
-
-        printf("Informe o celular: ");
-        fgets(cliente.dados.pf.celular, TAM_TELEFONE, stdin);
-        cliente.dados.pf.celular[strcspn(cliente.dados.pf.celular, "\n")] = 0;
-
-        printf("\nPessoa Física cadastrada com sucesso!\n");
-
-    } else if (tipo == 2) {
-        printf("Informe a razão social: ");
-        fgets(cliente.dados.pj.razao_social, TAM_RAZAO, stdin);
-        cliente.dados.pj.razao_social[strcspn(cliente.dados.pj.razao_social, "\n")] = 0;
-
-        do {
-            printf("Informe o CNPJ (somente números): ");
-            fgets(cliente.dados.pj.cnpj, TAM_CNPJ, stdin);
-            cliente.dados.pj.cnpj[strcspn(cliente.dados.pj.cnpj, "\n")] = 0;
-
-            if (!validar_CNPJ(cliente.dados.pj.cnpj)) {
-                printf("CNPJ inválido! Tente novamente.\n");
-            }
-        } while (!validar_CNPJ(cliente.dados.pj.cnpj));
-
-        printf("\nPessoa Jurídica cadastrada com sucesso!\n");
-
-    } else {
-        printf("Opção inválida!\n");
-        return;
-    }
-}
-void listar_clientes(){
-    printf("\n----- DADOS CADASTRADOS -----\n");
-    printf("ID: %d\n", cliente.id);
-    printf("Nome: %s\n", cliente.nome);
-    printf("Endereço: %s\n", cliente.endereco);
-    printf("Telefone: %s\n", cliente.telefone);
-
-    if (tipo == 1) {
-        printf("Nome completo: %s\n", cliente.dados.pf.nome);
-        printf("CPF: %s\n", cliente.dados.pf.cpf);
-        printf("Celular: %s\n", cliente.dados.pf.celular);
-    } else {
-        printf("Razão Social: %s\n", cliente.dados.pj.razao_social);
-        printf("CNPJ: %s\n", cliente.dados.pj.cnpj);
-    }
-    printf("-----------------------------\n");
-}
-void editar_cliente(){
-
-}
-void consultar_cliente(){
-
-}
-void remover_cliente(){
-
-}
-void carregar_clientesCSV(){
-
-}
-void salvar_clientesCSV(){
-
-}
-
-//VALIDADORES
+//Validar CPF
 int validar_CPF(const char *cpf){
-    int i, j, digito1, digito2, soma, resto;
-    char numeros[12];
+    int i, j, digito1, digito2, soma;
 
-    int index = 0;
-    for (i=0; cpf[i]!='\0'; i++) {
-        if (cpf[i]>='0' && cpf[i]<='9') { 
-            numeros[index++]=cpf[i];
-          }
-    }
-    if (strlen(numeros)!=11)
+    if (strlen(cpf)!=11)
         return 0;
 
     int iguais=1;
     for (i=1; i<11; i++) {
-        if (numeros[i]!=numeros[0]) {
+        if (cpf[i]!=cpf[0]) {
             iguais=0;
             break;
         }
     }
-    if (iguais)
-        return 0;
+    if(iguais) return 0;
 
     soma=0;
     for (i=0, j=10; i<9; i++, j--)
-        soma+=(numeros[i]-'0')*j;
+        soma+=(cpf[i]-'0')*j;
 
-    resto=soma%11;
-    digito1=(resto<2)?0:11-resto;
+    digito1=(soma*10)%11;
+    if (digito1==10) digito1=0;
+
+    if (digito1!=(cpf[9]-'0'))
+        return 0;
 
     soma=0;
     for (i=0, j=11; i<10; i++, j--)
-        soma+=(numeros[i]-'0')*j;
+        soma+=(cpf[i]-'0')*j;
 
-    resto=soma%11;
-    digito2=(resto<2)?0:11-resto;
+    digito2=(soma*10)%11;
+    if (digito2==10) digito2=0;
 
-    if (digito1==(numeros[9]-'0') && digito2==(numeros[10]-'0'))
-        return 1;
-    else
+    if (digito2!=(cpf[10]-'0'))
         return 0;
+
+    return 1;
 }
 
+//Validar CNPJ
 int validar_CNPJ(const char *cnpj){
-    int i,j,soma,resto,digito1,digito2;
-    char numeros[15];
-    int pesos1[12]={5,4,3,2,9,8,7,6,5,4,3,2};
-    int pesos2[13]={6,5,4,3,2,9,8,7,6,5,4,3,2};
+    int i,soma,resto,d1,d2;
+    int p1[12]={5,4,3,2,9,8,7,6,5,4,3,2};
+    int p2[13]={6,5,4,3,2,9,8,7,6,5,4,3,2};
 
-    int index=0;
-    for(i=0;cnpj[i]!='\0';i++){
-        if(cnpj[i]>='0'&&cnpj[i]<='9'){
-            numeros[index++]=cnpj[i];
-        }
-    }
-    numeros[index]='\0';
-
-    if(strlen(numeros)!=14)
-        return 0;
+    if(strlen(cnpj)!=14) return 0;
 
     int iguais=1;
     for(i=1;i<14;i++){
-        if(numeros[i]!=numeros[0]){
-            iguais=0;
+        if(cnpj[i]!=cnpj[0]){iguais=0;break;}
+    }
+    if(iguais) return 0;
+
+    soma=0;
+    for(i=0;i<12;i++) soma+=(cnpj[i]-'0')*p1[i];
+    resto=soma%11;
+    d1=(resto<2)?0:(11-resto);
+    if(d1!=(cnpj[12]-'0')) return 0;
+
+    soma=0;
+    for(i=0;i<13;i++) soma+=(cnpj[i]-'0')*p2[i];
+    resto=soma%11;
+    d2=(resto<2)?0:(11-resto);
+    if(d2!=(cnpj[13]-'0')) return 0;
+
+    return 1;
+}
+
+//Cadastrar clientes
+void cadastrar_cliente(){
+    Cliente cliente;
+    int tipo, existe=0;
+    char linha[500];
+
+    printf("Qual você deseja cadastrar?\n");
+    printf("(1) Pessoa Física\n");
+    printf("(2) Pessoa Jurídica\n");
+    printf("Opção: ");
+    scanf("%d",&tipo);
+    getchar();
+
+    if(tipo!=1 && tipo!=2){
+        printf("Opção inválida!\n");
+        return;
+    }
+
+    do{
+        existe=0;
+        printf("Defina o seu ID de cliente: ");
+        scanf("%d",&cliente.id);
+        getchar();
+
+        FILE *Arqcliente=fopen("clientes.csv","r");
+
+        if(Arqcliente==NULL){
+            printf("Erro para abrir arquivo!\n");
+            return;
+        }else{
+            while(fgets(linha,sizeof(linha),Arqcliente)){
+                int id_existente;
+                sscanf(linha,"%d;",&id_existente);
+                if(id_existente==cliente.id){
+                    existe=1;
+                    printf("Código já existente! Digite outro.\n");
+                    break;
+                }
+            }
+        }
+        fclose(Arqcliente);
+    }while(existe);
+
+    char numero_cadastro[20];
+    int valido=0, duplicado=0;
+
+    do{
+        duplicado=0;
+
+        if(tipo==1)
+            printf("Insira seu CPF (somente números):\n");
+        else
+            printf("Insira o CNPJ (somente números):\n");
+
+        fgets(numero_cadastro,sizeof(numero_cadastro),stdin);
+
+        int tamanho=strlen(numero_cadastro);
+        if(numero_cadastro[tamanho-1]=='\n')
+            numero_cadastro[tamanho-1]='\0';
+
+        if(tipo==1)
+            valido=validar_CPF(numero_cadastro);
+        else
+            valido=validar_CNPJ(numero_cadastro);
+
+        if(!valido)
+            printf("Número inválido! Digite novamente.\n");
+
+    }while(!valido);
+
+    FILE *Arqcliente=fopen("clientes.csv","r");
+
+    if(Arqcliente==NULL){
+        printf("Erro para abrir arquivo!\n");
+        return;
+    }else{
+        while(fgets(linha,sizeof(linha),Arqcliente)){
+            char cpfCnpj_existente[20];
+            sscanf(linha,"%*d;%*d;%*[^;];%*[^;];%[^;];",cpfCnpj_existente);
+
+            if(strcmp(cpfCnpj_existente,numero_cadastro)==0){
+                duplicado=1;
+                printf("Este CPF/CNPJ já está cadastrado!\n");
+                break;
+            }
+        }
+        fclose(Arqcliente);
+    }
+    
+    if(tipo==1)
+        strcpy(cliente.dados.pf.cpf, numero_cadastro);
+    else
+        strcpy(cliente.dados.pj.cnpj, numero_cadastro);
+    
+    if (tipo == 1) {
+        printf("Informe seu nome completo: ");
+        fgets(cliente.dados.pf.nome, TAM_NOME, stdin);
+        cliente.dados.pf.nome[strcspn(cliente.dados.pf.nome, "\n")] = 0;
+
+        printf("Informe seu celular: ");
+        fgets(cliente.dados.pf.celular, TAM_TELEFONE, stdin);
+        cliente.dados.pf.celular[strcspn(cliente.dados.pf.celular, "\n")] = 0;
+        
+        printf("Informe seu endereço completo: ");
+        fgets(cliente.endereco, TAM_ENDERECO, stdin);
+        cliente.endereco[strcspn(cliente.endereco, "\n")] = 0;
+    
+        printf("Informe seu telefone: ");
+        fgets(cliente.telefone, TAM_TELEFONE, stdin);
+        cliente.telefone[strcspn(cliente.telefone, "\n")] = 0;
+    
+        printf("Informe seu email: ");
+        fgets(cliente.email, TAM_EMAIL, stdin);
+        cliente.email[strcspn(cliente.email, "\n")] = 0;
+        
+    } else {
+        printf("Informe a razão social: ");
+        fgets(cliente.dados.pj.razao_social, TAM_RAZAO, stdin);
+        cliente.dados.pj.razao_social[strcspn(cliente.dados.pj.razao_social, "\n")] = 0;
+
+        printf("Informe o nome para contato: ");
+        fgets(cliente.dados.pj.nome_contato, TAM_NOME, stdin);
+        cliente.dados.pj.nome_contato[strcspn(cliente.dados.pj.nome_contato, "\n")] = 0;
+        
+        printf("Informe o endereço completo: ");
+        fgets(cliente.endereco, TAM_ENDERECO, stdin);
+        cliente.endereco[strcspn(cliente.endereco, "\n")] = 0;
+    
+        printf("Informe o telefone: ");
+        fgets(cliente.telefone, TAM_TELEFONE, stdin);
+        cliente.telefone[strcspn(cliente.telefone, "\n")] = 0;
+    
+        printf("Informe o email: ");
+        fgets(cliente.email, TAM_EMAIL, stdin);
+        cliente.email[strcspn(cliente.email, "\n")] = 0;
+    }
+    
+    Arqcliente=fopen("clientes.csv", "a");
+    if (Arqcliente==NULL) {
+        printf("Erro ao abrir o arquivo!\n");
+        return;
+    }
+        
+    fprintf(Arqcliente, "%d;%d;%s;%s;%s;%s;%s;%s;%s\n",
+        cliente.id,
+        tipo,
+        (tipo==1)?cliente.dados.pf.nome:cliente.dados.pj.razao_social,
+        (tipo==1)?cliente.dados.pf.cpf:cliente.dados.pj.cnpj,
+        (tipo==1)?cliente.dados.pf.celular:cliente.dados.pj.nome_contato,
+        cliente.endereco,
+        cliente.telefone,
+        cliente.email,
+        (tipo==2)?cliente.dados.pj.telefone:"");
+
+    fclose(Arqcliente);
+
+    printf("Cliente cadastrado com sucesso!\n");
+}
+
+//Consultar clientes
+void consultar_cliente() {
+    FILE *Arqcliente = fopen("clientes.csv", "r");
+    if (Arqcliente==NULL) {
+        printf("Nenhum cliente cadastrado!\n");
+        return;
+    }
+
+    int id_busca, encontrado = 0;
+    char linha[500];
+
+    printf("Informe o ID do cliente para consulta: ");
+    scanf("%d", &id_busca);
+    getchar();
+
+    while (fgets(linha, sizeof(linha), Arqcliente)) {
+        int id, tipo;
+        char nome[100], cpfCnpj[20], contato[100], endereco[200], telefone[20], email[100], celular[20], razao[100];
+
+        sscanf(linha, "%d;%d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^\n]",
+               &id, &tipo, nome, cpfCnpj, contato, endereco, telefone, email, celular, razao);
+
+        if (id==id_busca) {
+            encontrado=1;
+            printf("\n----- DADOS DO CLIENTE -----\n");
+            printf("ID: %d\n", id);
+            printf("Tipo: %s\n", (tipo==1) ? "Pessoa Física":"Pessoa Jurídica");
+            if (tipo==1) {
+                printf("Nome: %s\nCPF: %s\nCelular: %s\n", nome, cpfCnpj, celular);
+            } else {
+                printf("Razão Social: %s\nCNPJ: %s\nContato: %s\n", nome, cpfCnpj, contato);
+            }
+            printf("Endereço: %s\nTelefone: %s\nEmail: %s\n", endereco, telefone, email);
+            printf("----------------------------\n");
             break;
         }
     }
-    if(iguais)
-        return 0;
 
-    soma=0;
-    for(i=0;i<12;i++)
-        soma+=(numeros[i]-'0')*pesos1[i];
+    fclose(Arqcliente);
 
-    resto=soma%11;
-    digito1=(resto<2)?0:11-resto;
+    if (!encontrado)
+        printf("Cliente não encontrado.\n");
+}
 
-    soma=0;
-    for(i=0;i<13;i++)
-        soma+=(numeros[i]-'0')*pesos2[i];
+//Remover clientes
+void remover_cliente() {
+    FILE *Arqcliente=fopen("clientes.csv", "r");
+    if (Arqcliente==NULL) {
+        printf("Nenhum cliente cadastrado.\n");
+        return;
+    }
 
-    resto=soma%11;
-    digito2=(resto<2)?0:11-resto;
+    FILE *temp = fopen("temp.csv", "w");
+    if (temp==NULL) {
+        printf("Erro ao criar arquivo temporário.\n");
+        fclose(Arqcliente);
+        return;
+    }
 
-    if(digito1==(numeros[12]-'0')&&digito2==(numeros[13]-'0'))
-        return 1;
-    else
-        return 0;
+    int remover_id, encontrado=0, confirmar;
+    char linha[500];
+
+    printf("Informe o ID do cliente a ser removido: ");
+    scanf("%d", &remover_id);
+    getchar();
+
+    while (fgets(linha, sizeof(linha), Arqcliente)) {
+        int id;
+        sscanf(linha, "%d;", &id);
+
+        if (id==remover_id) {
+            encontrado=1;
+            printf("Deseja realmente remover o cliente %d? (1 - Sim / 0 - Não): ", remover_id);
+            scanf("%d", &confirmar);
+            getchar();
+
+            if (confirmar==1) {
+                printf("Cliente removido com sucesso.\n");
+                continue;
+            } else {
+                printf("Remoção cancelada.\n");
+                fputs(linha, temp);
+            }
+        } else {
+            fputs(linha, temp);
+        }
+    }
+
+    fclose(Arqcliente);
+    fclose(temp);
+
+    remove("clientes.csv");
+    rename("temp.csv", "clientes.csv");
+
+    if (!encontrado)
+        printf("Cliente não encontrado.\n");
+}
+
+//Listar clientes
+void listar_clientes() {
+    FILE *Arqcliente=fopen("clientes.csv", "r");
+    if (Arqcliente==NULL) {
+        printf("Nenhum cliente cadastrado.\n");
+        return;
+    }
+
+    char linha[500];
+    int contador=0;
+
+    printf("\n-----LISTA DE CLIENTES-----\n");
+
+    while (fgets(linha, sizeof(linha), Arqcliente)) {
+        int id, tipo;
+        char nome[100], cpfCnpj[20], contato[100], endereco[200], telefone[20], email[100], celular[20], razao[100];
+
+        sscanf(linha, "%d;%d;%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^;];%[^\n]",
+               &id, &tipo, nome, cpfCnpj, contato, endereco, telefone, email, celular, razao);
+
+        printf("\nID: %d\n", id);
+        printf("Tipo: %s\n", (tipo==1) ? "Pessoa Física":"Pessoa Jurídica");
+        if (tipo==1) {
+            printf("Nome: %s\nCPF: %s\nCelular: %s\n", nome, cpfCnpj, celular);
+        } else {
+            printf("Razão Social: %s\nCNPJ: %s\nContato: %s\n", nome, cpfCnpj, contato);
+        }
+        printf("Endereço: %s\nTelefone: %s\nEmail: %s\n", endereco, telefone, email);
+        printf("-----------------------------\n");
+        contador++;
+    }
+
+    if (contador==0)
+        printf("Nenhum cliente cadastrado.\n");
+
+    fclose(Arqcliente);
 }

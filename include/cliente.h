@@ -8,6 +8,7 @@
 #define TAM_CPF 15
 #define TAM_CNPJ 20
 #define TAM_RAZAO 100
+#define TAM_EMAIL 100
 
 //Pessoa Física
 typedef struct {
@@ -18,16 +19,18 @@ typedef struct {
 
 //Pessoa Jurídica
 typedef struct {
+    char nome_contato[TAM_NOME];
     char razao_social[TAM_RAZAO];
     char cnpj[TAM_CNPJ];
+    char telefone[TAM_TELEFONE];
 } PessoaJuridica;
 
 //Cliente
 typedef struct {
     int id;
-    char nome[TAM_NOME];
     char endereco[TAM_ENDERECO];
     char telefone[TAM_TELEFONE];
+    char email[TAM_EMAIL];
     union {
         PessoaFisica pf;
         PessoaJuridica pj;
@@ -35,13 +38,10 @@ typedef struct {
 } Cliente;
 
 //Funções
-void inserir_cliente();
+void cadastrar_cliente();
 void listar_clientes();
-void editar_cliente();
 void consultar_cliente();
-void remover_cliente()
-void carregar_clientesCSV();
-void salvar_clientesCSV();
+void remover_cliente();
 int validar_CPF(const char *cpf);
 int validar_CNPJ(const char *cnpj);
 

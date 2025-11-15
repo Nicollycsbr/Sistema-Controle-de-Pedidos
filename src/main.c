@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ncurses.h>
+#include <curses.h>
 #include "../include/interface.h"
 
 int menu_principal() {
@@ -12,6 +12,7 @@ int menu_principal() {
     mvprintw(5, 4, "(3) Pedidos");
     mvprintw(6, 4, "(0) Sair");
     mvprintw(8, 2, "Qual área deseja acessar? ");
+    mvprintw(9, 1, "-------------------------");
     refresh();
     op = getch() - '0';
     return op;

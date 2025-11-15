@@ -1,6 +1,6 @@
-#include <ncurses.h>
-#include "../include/interface.h"
-#include "../include/cliente.h"
+#include <curses.h>
+#include "interface.h"
+#include "cliente.h"
 
 void menu_cliente() {
     int highlight = 0;

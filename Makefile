@@ -1,45 +1,55 @@
-#nome do executável 
-EXEC = build/cliente
+# ============================================================
+# Makefile — Sistema de Controle de Pedidos (SCP)
+# Projeto em C com múltiplos módulos e interface ncurses
+# ============================================================
+# === CONFIGURAÇÕES GERAIS ===
+CC = gcc # Compilador C
+CFLAGS = -Wall -Wextra -Iinclude # Opções de compilação (-I indica
+onde estão os .h)
+LIBS = -lncurses # Biblioteca para interface de texto
+(Linux)
+BUILD_DIR = build # Diretório onde serão colocados os
+arquivos compilados
+SRC_DIR = src # Diretório dos arquivos .c
 
-#compilador 
-CC = gcc
-
-#diretórios 
-SRC_DIR = src 
-INC_DIR = include
-BUILD_DIR = build 
-
-# Arquivos-fonte e cabeçalhos 
-SRC = $(SRC_DIR)/main.c $(SRC_DIR)/cliente.c
-INCLUDES = -I$(INC_DIR)
-
-#Flags de compilação 
-CFLAGS = -Wall -Wextra -std=c11
-
-#Regra padrão 
-$(EXEC): $(SRC)
-	@mkdir -p $(BUILD_DIR)
-	$(CC) $(SRC) $(INCLUDES) $(CFLAGS) -o $(EXEC)
-	@echo "Compilação concluída! Executável gerado em $(EXEC)"
-
-#Rodar o programa 
-run: $(EXEC)
-	./$(EXEC)
-
-#Limpar arquivos compilados 
+INC_DIR = include # Diretório dos arquivos .h
+EXEC = $(BUILD_DIR)/scp # Nome do executável final
+# === LISTA DE ARQUIVOS ===
+SRC_FILES = $(wildcard $(SRC_DIR)/*.c)
+OBJ_FILES = $(patsubst $(SRC_DIR)/%.c, $(BUILD_DIR)/%.o, $
+(SRC_FILES))
+# ============================================================
+# REGRAS PRINCIPAIS
+# ============================================================
+# Regra padrão (executada quando rodamos apenas "make")
+all: dirs $(EXEC)
+@echo "Compilação concluída com sucesso!"
+# Cria diretório build se não existir
+dirs:
+@mkdir -p $(BUILD_DIR)
+# Como gerar o executável a partir dos objetos
+$(EXEC): $(OBJ_FILES)
+$(CC) $(OBJ_FILES) -o $(EXEC) $(LIBS)
+# Como gerar cada arquivo .o (objeto) a partir de um .c
+$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
+$(CC) $(CFLAGS) -c $< -o $@
+# Limpa arquivos compilados
 clean:
-	rm -rf $(BUILD_DIR)
-	@echo "Diretório 'build' limpo!" 
+rm -rf $(BUILD_DIR)
+@echo "Limpeza concluída."
+# Executa o programa (depois de compilar)
+run: all
+@echo "Executando o Sistema de Controle de Pedidos..."
+@$(EXEC)
+# Mostra ajuda
+help:
+@echo "Comandos disponíveis:"
+@echo " make → compila o projeto"
+@echo " make run → compila e executa"
+@echo " make clean → remove arquivos compilados"
+@echo " make help → mostra esta ajuda"
+.PHONY: all clean run help dirs
 
-CFLAGS = -Iinclude
-LDFLAGS = -lncurses
 
-SRC = src/main.c src/interface.c src/cliente.c
-OBJ = $(SRC:.c=.o)
-EXEC = sistema
 
-$(EXEC): $(OBJ)
-	$(CC) $(OBJ) -o $(EXEC) $(LDFLAGS)
 
-clean:
-	rm -f $(OBJ) $(EXEC)
