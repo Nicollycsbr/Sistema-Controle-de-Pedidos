@@ -1,6 +1,8 @@
 #ifndef INTERFACE_H
 #define INTERFACE_H
 
-void menu_cliente();
+#include "cliente.h"
 
-#endif
+void menu_cliente(Cliente clientes[], int *qtd);
+
+#endif 

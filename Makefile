@@ -1,45 +1,34 @@
-#nome do executável 
+# Nome do executável 
 EXEC = build/cliente
 
-#compilador 
+# Compilador
 CC = gcc
 
-#diretórios 
-SRC_DIR = src 
+# Diretórios
+SRC_DIR = src
 INC_DIR = include
-BUILD_DIR = build 
+BUILD_DIR = build
 
-# Arquivos-fonte e cabeçalhos 
-SRC = $(SRC_DIR)/main.c $(SRC_DIR)/cliente.c
-INCLUDES = -I$(INC_DIR)
+# Arquivos-fonte (todos .c do src)
+SRC = $(SRC_DIR)/main.c $(SRC_DIR)/cliente.c $(SRC_DIR)/interface.c $(SRC_DIR)/persistencia.c
 
-#Flags de compilação 
-CFLAGS = -Wall -Wextra -std=c11
+# Flags de compilação
+CFLAGS = -Wall -Wextra -std=c11 -I$(INC_DIR)
 
-#Regra padrão 
+# Flags de biblioteca
+LDFLAGS = -lncurses
+
+# Regra padrão (gera o executável)
 $(EXEC): $(SRC)
 	@mkdir -p $(BUILD_DIR)
-	$(CC) $(SRC) $(INCLUDES) $(CFLAGS) -o $(EXEC)
+	$(CC) $(SRC) $(CFLAGS) -o $(EXEC) $(LDFLAGS)
 	@echo "Compilação concluída! Executável gerado em $(EXEC)"
 
-#Rodar o programa 
+# Rodar o programa
 run: $(EXEC)
 	./$(EXEC)
 
-#Limpar arquivos compilados 
+# Limpar arquivos compilados
 clean:
 	rm -rf $(BUILD_DIR)
-	@echo "Diretório 'build' limpo!" 
-
-CFLAGS = -Iinclude
-LDFLAGS = -lncurses
-
-SRC = src/main.c src/interface.c src/cliente.c
-OBJ = $(SRC:.c=.o)
-EXEC = sistema
-
-$(EXEC): $(OBJ)
-	$(CC) $(OBJ) -o $(EXEC) $(LDFLAGS)
-
-clean:
-	rm -f $(OBJ) $(EXEC)
+	@echo "Diretório 'build' limpo!"
