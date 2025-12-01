@@ -139,9 +139,6 @@ void cadastrar_cliente(Cliente clientes[], int *qtd) {
     mvprintw(9, 2, "Endereco: ");
     getnstr(c.endereco, TAM_ENDERECO - 1);
 
-    mvprintw(10, 2, "Telefone: ");
-    getnstr(c.telefone, TAM_TELEFONE - 1);
-
     mvprintw(11, 2, "Email: ");
     getnstr(c.email, TAM_EMAIL - 1);
 
