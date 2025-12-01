@@ -2,8 +2,8 @@
 #include <stdio.h>
 #include "interface.h"
 #include "cliente.h"
+#include "produto.h"
 
-// Função auxiliar para input ncurses
 static void nc_input(int row, int col, const char *prompt, char *buffer, int maxlen) {
     mvprintw(row, col, "%s", prompt);
     echo();
@@ -13,7 +13,6 @@ static void nc_input(int row, int col, const char *prompt, char *buffer, int max
     curs_set(0);
 }
 
-// Menu de cliente usando ncurses
 void menu_cliente(Cliente clientes[], int *qtd) {
     int highlight = 0;
     int choice;
@@ -46,26 +45,78 @@ void menu_cliente(Cliente clientes[], int *qtd) {
             case KEY_DOWN:
                 highlight = (highlight == n_opcoes - 1) ? 0 : highlight + 1;
                 break;
-            case 10: // Enter
+            case 10: 
                 switch (highlight) {
-                    case 0: // Cadastrar
+                    case 0:
                         cadastrar_cliente(clientes, qtd);
                         break;
-                    case 1: // Remover
+                    case 1:
                         remover_cliente(clientes, qtd);
                         break;
-                    case 2: // Consultar
+                    case 2:
                         consultar_cliente(clientes, *qtd);
                         break;
-                    case 3: // Listar
+                    case 3:
                         listar_clientes(clientes, *qtd);
                         mvprintw(LINES - 2, 2, "Pressione qualquer tecla para voltar...");
                         getch();
                         break;
-                    case 4: // Voltar
-                        return;
+                    case 4:
+                        return; 
                 }
                 break;
         }
     }
+}
+
+void menu_produto() {
+    int opcao;
+
+    do {
+        clear();
+        mvprintw(2, 10, "----- MENU PRODUTO -----");
+        mvprintw(5, 12, "1. Cadastrar produto");
+        mvprintw(6, 12, "2. Listar produtos");
+        mvprintw(7, 12, "3. Atualizar produto");
+        mvprintw(8, 12, "4. Deletar produto");
+        mvprintw(9, 12, "0. Voltar ao menu principal");
+        mvprintw(11, 10, "Escolha uma opcao: ");
+        refresh();
+
+        scanw("%d", &opcao);
+
+        switch (opcao) {
+            case 1: cadastrarProduto(); break;
+            case 2: listarProdutos(); break;
+            case 3: atualizarProduto(); break;
+            case 4: deletarProduto(); break;
+        }
+
+    } while (opcao != 0);
+}
+
+void menu_principal(Cliente clientes[], int *qtd_clientes) {
+    int opcao;
+
+    do {
+        clear();
+        mvprintw(2, 10, "===== MENU PRINCIPAL =====");
+        mvprintw(5, 12, "1. Cliente");
+        mvprintw(6, 12, "2. Produto");
+        mvprintw(7, 12, "0. Sair");
+        mvprintw(9, 10, "Escolha uma opcao: ");
+        refresh();
+
+        scanw("%d", &opcao);
+
+        switch (opcao) {
+            case 1:
+                menu_cliente(clientes, qtd_clientes);
+                break;
+            case 2:
+                menu_produto();
+                break;
+        }
+
+    } while (opcao != 0);
 }

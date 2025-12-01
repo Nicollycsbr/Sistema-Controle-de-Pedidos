@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <ncurses.h>
+
 #include "interface.h"
 #include "persistencia.h"
 #include "cliente.h"
@@ -16,7 +17,7 @@ int main() {
     keypad(stdscr, TRUE);
     curs_set(0);
 
-    menu_cliente(clientes, &qtd_clientes);  // passa como parâmetro
+    menu_principal(clientes, &qtd_clientes);
 
     salvar_clientes(CLIENTES_CSV, clientes, qtd_clientes);
 
