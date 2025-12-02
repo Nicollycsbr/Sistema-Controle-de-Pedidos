@@ -17,5 +17,6 @@ void cadastrarProduto();
 void listarProdutos();
 void atualizarProduto();
 void deletarProduto();
+void menu_produto();
 
 #endif
