@@ -1,8 +1,10 @@
 #include <ncurses.h>
 #include <stdio.h>
+#include <string.h>
 #include "interface.h"
 #include "cliente.h"
 #include "produto.h"
+#include "ui.h"
 
 void menu_cliente(Cliente clientes[], int *qtd) {
     int highlight = 0;
@@ -20,10 +22,25 @@ void menu_cliente(Cliente clientes[], int *qtd) {
 
     while (1) {
         clear();
-        mvprintw(1, 2, "----- MENU CLIENTE -----");
+        int box_w;
+        int box_h = n_opcoes + 6;
+        int starty = (LINES - box_h) / 2;
+        int startx = -1; /* request centered box from draw_box_auto */
+
+        draw_box_auto(starty, startx, box_h, " MENU CLIENTE ", (const char **)opcoes, n_opcoes, &box_w);
+        startx = (COLS - box_w) / 2;
+        
+        /* Print hint using ACS arrow characters to avoid unicode issues */
+        int hint_y = starty + 2;
+        int hint_x = startx + 2;
+        mvprintw(hint_y, hint_x, "Use ");
+        mvaddch(hint_y, hint_x + 4, ACS_UARROW);
+        mvaddch(hint_y, hint_x + 5, '/');
+        mvaddch(hint_y, hint_x + 6, ACS_DARROW);
+        mvprintw(hint_y, hint_x + 8, " ou digite o número");
         for (int i = 0; i < n_opcoes; ++i) {
             if (i == highlight) attron(A_REVERSE);
-            mvprintw(3 + i, 4, "%s", opcoes[i]);
+            mvprintw(starty + 4 + i, startx + 3, "%d. %s", i + 1, opcoes[i]);
             if (i == highlight) attroff(A_REVERSE);
         }
         refresh();
@@ -46,7 +63,6 @@ void menu_cliente(Cliente clientes[], int *qtd) {
                             case 1: remover_cliente(clientes, qtd); break;
                             case 2: consultar_cliente(clientes, *qtd); break;
                             case 3:
-                        #include <string.h>
                                 listar_clientes(clientes, *qtd);
                                 mvprintw(LINES - 2, 2, "Pressione qualquer tecla para voltar...");
                                 getch();
@@ -94,10 +110,25 @@ void menu_principal(Cliente clientes[], int *qtd_clientes) {
 
     while (1) {
         clear();
-        mvprintw(2, 10, "===== MENU PRINCIPAL =====");
+        int box_w;
+        int box_h = n_opcoes + 6;
+        int starty = (LINES - box_h) / 2;
+        int startx = -1; /* request centered box from draw_box_auto */
+
+        draw_box_auto(starty, startx, box_h, " MENU PRINCIPAL ", (const char **)opcoes, n_opcoes, &box_w);
+        startx = (COLS - box_w) / 2;
+
+        /* Print hint using ACS arrow characters to avoid unicode issues */
+        int hint_y = starty + 2;
+        int hint_x = startx + 2;
+        mvprintw(hint_y, hint_x, "Use ");
+        mvaddch(hint_y, hint_x + 4, ACS_UARROW);
+        mvaddch(hint_y, hint_x + 5, '/');
+        mvaddch(hint_y, hint_x + 6, ACS_DARROW);
+        mvprintw(hint_y, hint_x + 8, " ou digite o número");
         for (int i = 0; i < n_opcoes; ++i) {
             if (i == highlight) attron(A_REVERSE);
-            mvprintw(5 + i, 12, "%s", opcoes[i]);
+            mvprintw(starty + 4 + i, startx + 3, "%d. %s", i + 1, opcoes[i]);
             if (i == highlight) attroff(A_REVERSE);
         }
         refresh();

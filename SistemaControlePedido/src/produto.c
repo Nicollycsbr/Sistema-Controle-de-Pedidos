@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "ui.h"
 
 #define ARQUIVO_PRODUTOS "data/Produtos.csv"
 
@@ -204,7 +205,7 @@ void menu_produto() {
         int box_h = n_opcoes + 6;
         int starty = (LINES - box_h) / 2;
         int startx = (COLS - box_w) / 2;
-        // draw box (duplicate small helper to avoid cross-file symbol)
+
         mvaddch(starty, startx, ACS_ULCORNER);
         mvaddch(starty, startx + box_w - 1, ACS_URCORNER);
         mvaddch(starty + box_h - 1, startx, ACS_LLCORNER);
@@ -218,7 +219,14 @@ void menu_produto() {
             mvaddch(i, startx + box_w - 1, ACS_VLINE);
         }
         mvprintw(starty, startx + (box_w - 12) / 2, " MENU PRODUTO ");
-        mvprintw(starty + 2, startx + 3, "Use ↑/↓ ou digite o número e Enter");
+        /* Print hint using ACS arrow characters to avoid unicode issues */
+        int hint_y = starty + 2;
+        int hint_x = startx + 3;
+        mvprintw(hint_y, hint_x, "Use ");
+        mvaddch(hint_y, hint_x + 4, ACS_UARROW);
+        mvaddch(hint_y, hint_x + 5, '/');
+        mvaddch(hint_y, hint_x + 6, ACS_DARROW);
+        mvprintw(hint_y, hint_x + 8, " ou digite o número e Enter");
         for (int i = 0; i < n_opcoes; ++i) {
             if (i == highlight) attron(A_REVERSE);
             mvprintw(starty + 4 + i, startx + 4, "%d. %s", i + 1, opcoes[i]);
