@@ -3,20 +3,37 @@
 #include <ncurses.h>
 #include "../include/pedido.h"
 
+int menu() {
+    int opcao;
+
+    clear();
+
+    mvprintw(1, 2, "=== MENU DE PRODUTOS ===");
+    mvprintw(2, 3, "1. Cadastrar pedido");
+    mvprintw(3, 3, "2. Listar pedidos");
+    mvprintw(4, 3, "3. Consultar pedido");
+    mvprintw(5, 3, "4. Atualizar pedido");
+    mvprintw(6, 3, "5. Deletar pedido");
+    mvprintw(7, 3, "0. Sair");
+    mvprintw(9, 1, "=========================");
+    mvprintw(11, 1, "Escolha uma opcao: ");
+
+    refresh();
+
+    opcao = getch() - '0'; 
+    return opcao;
+}
+
 int main() {
     int opcao;
 
+    initscr();
+    cbreak();
+    noecho();              
+    keypad(stdscr, TRUE);
+
     do {
-        mvprintf("\n=== MENU DE PRODUTOS ===\n");
-        printf("1. Cadastrar pedido\n");
-        printf("2. Listar pedidos\n");
-        printf("3. consultar pedido\n");
-        printf("4. atualizar pedido\n");
-        printf("5. deletar pedido\n");
-        printf("0. Sair\n");
-        printf("=========================\n");
-        printf("Escolha uma opcao: ");
-        scanf("%d", &opcao);
+        opcao = menu();
 
         switch (opcao) {
             case 1:
@@ -35,13 +52,18 @@ int main() {
                 deletarPedido();
                 break;
             case 0:
-                printf("finalizando...\n");
+                mvprintw(13, 1, "Finalizando...");
+                refresh();
+                getch();
                 break;
             default:
-                printf("\nOpcao invalida! Tente novamente.\n");
+                mvprintw(13, 1, "Opcao invalida! Tente novamente.");
+                refresh();
+                getch();
         }
 
     } while (opcao != 0);
 
+    endwin();
     return 0;
 }
